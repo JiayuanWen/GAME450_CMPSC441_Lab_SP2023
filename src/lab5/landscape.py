@@ -6,6 +6,12 @@ def get_elevation(size):
     xpix, ypix = size
     elevation = np.array([])
     '''Play around with perlin noise to get a better looking landscape (This is required for the lab)'''
+    noise = PerlinNoise(octaves=10, seed=8964)
+    elevation = np.array([[noise([i/xpix, j/ypix]) for j in range(ypix)] for i in range(xpix)])
+
+    # For debug purposes
+    #plt.imshow(elevation, cmap="gray")
+    #plt.show()
 
     return elevation
 
@@ -20,6 +26,7 @@ def elevation_to_rgba(elevation):
  
 
 get_landscape = lambda size: elevation_to_rgba(get_elevation(size))
+
 
 
 if __name__ == '__main__':

@@ -29,6 +29,22 @@ from lab2.cities_n_routes import get_randomly_spread_cities, get_routes
 # TODO: Demo blittable surface helper function
 
 ''' Create helper functions here '''
+def mark_cities(city_locations):
+    #testlocation = pygame.math.Vector2(255,255)
+    #pygame.draw.circle(pygame_surface, pygame.Color(0,255,9), testlocation, 4)
+
+    for coord in city_locations:
+        #print(coord) 
+        pygame.draw.circle(pygame_surface, pygame.Color(0,255,9), pygame.math.Vector2(coord), 4)
+
+    return
+
+def connect_cities(city_dict, routes):
+    start = []
+    end = []
+    
+
+
 
 if __name__ == "__main__":
     pygame.init()
@@ -46,6 +62,8 @@ if __name__ == "__main__":
     routes = []
 
     ''' Setup cities and routes in here'''
+    city_locations = get_randomly_spread_cities(size, len(city_names))
+    routes = get_routes(city_names)
 
     city_locations_dict = {name: location for name, location in zip(city_names, city_locations)}
     random.shuffle(routes)
@@ -60,7 +78,9 @@ if __name__ == "__main__":
         screen.blit(pygame_surface, (0, 0))
 
         ''' draw cities '''
+        mark_cities(city_locations)
 
         ''' draw first 10 routes '''
+        connect_cities(city_locations_dict, routes)
 
         pygame.display.flip()
