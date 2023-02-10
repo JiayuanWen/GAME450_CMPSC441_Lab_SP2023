@@ -66,7 +66,7 @@ def get_routes(city_names):
     routelist = []
 
     #Generate all posible connections between city names using itertools.combinations, store all posibilities to route list
-    routelist = list(itertools.combinations(city_names,2))
+    routelist = list(itertools.combinations_with_replacement(city_names,2))
 
     #Return completed route list
     return routelist

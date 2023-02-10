@@ -30,20 +30,53 @@ from lab2.cities_n_routes import get_randomly_spread_cities, get_routes
 
 ''' Create helper functions here '''
 def mark_cities(city_locations):
-    #testlocation = pygame.math.Vector2(255,255)
-    #pygame.draw.circle(pygame_surface, pygame.Color(0,255,9), testlocation, 4)
 
     for coord in city_locations:
-        #print(coord) 
         pygame.draw.circle(pygame_surface, pygame.Color(0,255,9), pygame.math.Vector2(coord), 4)
 
     return
 
 def connect_cities(city_dict, routes):
-    start = []
-    end = []
-    
+    start = (0,0)
+    end = (0,0)
 
+    for route in routes:
+        start = city_dict.get(route[0])
+        end = city_dict.get(route[1])
+
+        draw_dashed_line(pygame_surface, pygame.Color(9,9,9), start, end, width=2, dash_length=5)
+
+    return
+
+# Credit:https://codereview.stackexchange.com/questions/70143/drawing-a-dashed-line-with-pygame
+import math 
+def draw_dashed_line(surf, color, start_pos, end_pos, width=1, dash_length=10):
+    x1, y1 = start_pos
+    x2, y2 = end_pos
+    dl = dash_length
+
+    if (x1 == x2):
+        ycoords = [y for y in range(y1, y2, dl if y1 < y2 else -dl)]
+        xcoords = [x1] * len(ycoords)
+    elif (y1 == y2):
+        xcoords = [x for x in range(x1, x2, dl if x1 < x2 else -dl)]
+        ycoords = [y1] * len(xcoords)
+    else:
+        a = abs(x2 - x1)
+        b = abs(y2 - y1)
+        c = round(math.sqrt(a**2 + b**2))
+        dx = dl * a / c
+        dy = dl * b / c
+
+        xcoords = [x for x in np.arange(x1, x2, dx if x1 < x2 else -dx)]
+        ycoords = [y for y in np.arange(y1, y2, dy if y1 < y2 else -dy)]
+
+    next_coords = list(zip(xcoords[1::2], ycoords[1::2]))
+    last_coords = list(zip(xcoords[0::2], ycoords[0::2]))
+    for (x1, y1), (x2, y2) in zip(next_coords, last_coords):
+        start = (round(x1), round(y1))
+        end = (round(x2), round(y2))
+        pygame.draw.line(surf, color, start, end, width)
 
 
 if __name__ == "__main__":
