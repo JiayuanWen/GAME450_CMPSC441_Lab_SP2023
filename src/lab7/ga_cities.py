@@ -14,6 +14,9 @@ import matplotlib.pyplot as plt
 import pygad
 import numpy as np
 
+#Utilize some math function
+import math
+
 import sys
 from pathlib import Path
 
@@ -21,6 +24,8 @@ sys.path.append(str((Path(__file__) / ".." / ".." / "..").resolve().absolute()))
 
 from src.lab5.landscape import elevation_to_rgba
 
+# Function from previous lab, for initializing elevation in __main__ 
+from src.lab5.landscape import get_elevation
 
 def game_fitness(cities, idx, elevation, size):
     fitness = 0.0001  # Do not return a fitness of 0, it will mess up the algorithm.
@@ -30,6 +35,57 @@ def game_fitness(cities, idx, elevation, size):
     2. The cities should have a realistic distribution across the landscape
     3. The cities may also not be on top of mountains or on top of each other
     """
+
+    # For debug use
+    #print(cities)
+    #print(idx)
+    #print(elevation)
+    #print(size)
+
+    # City coordinates
+    citycoords = solution_to_cities(cities,size)
+
+    # For making easy adjustment during real run & debugging
+    min_dist = 800 # Minimum distance between cities
+    min_elev = 0.4 # Water level
+    max_elev = 0.65 # Mountain level
+
+    fitness_elev_good = 1 # Fitness score for desired elevation
+    fitness_elev_bad = -3 # Fitness score for undesired elevation
+
+    fitness_dist_good = 1 # Fitness score for desired distance between cities
+    fitness_dist_bad = -3 # Fitness score for undesired elevation
+
+    # For checking city distribution and two or more cities overlapping
+    citycoords_distcheck = citycoords
+
+    for city in citycoords:
+        # Crite 1: Check underwater
+        # Assuming elevation below min_elev is water
+        if(elevation[[city[0]],city[1]] < min_elev):
+            fitness += fitness_elev_bad
+        else:
+            fitness += fitness_elev_good
+
+        # Crite 3: Check on top of mountain
+        # Assuming elevation above max_elev is too high
+        if(elevation[[city[0]],city[1]] > max_elev):
+            fitness += fitness_elev_bad
+        else:
+            fitness += fitness_elev_good
+
+        # Crite 2: Check city distribution and overlapping
+        for city2 in citycoords_distcheck:
+            if not city[0] == city2[0] and not city[1] == city2[1]: # Prevent comparing same city
+                city_dist = math.sqrt(pow(city2[0] - city[0], 2) + pow(city2[1] - city[1], 2)) 
+
+                # Cities that are min_dist apart are too close.
+                if (city_dist < min_dist):
+                    fitness += fitness_dist_bad
+                else:
+                    fitness += fitness_dist_good
+
+
     return fitness
 
 
@@ -115,6 +171,8 @@ if __name__ == "__main__":
     n_cities = 10
     elevation = []
     """ initialize elevation here from your previous code"""
+    # Generate terrain using function from lab 5
+    elevation = get_elevation(size)
     # normalize landscape
     elevation = np.array(elevation)
     elevation = (elevation - elevation.min()) / (elevation.max() - elevation.min())
