@@ -27,14 +27,16 @@ x_train, x_test, y_train, y_test = train_test_split(
 
 """ Train a sklearn model here. """
 
-sklearn_model = KNeighborsClassifier(n_neighbors=2)
+sklearn_model = KNeighborsClassifier(n_neighbors=6)
 sklearn_model = sklearn_model.fit(x_train,y_train)
 
 # For debug purpose
 #print(x_test)
 
 # Accuracy
-print("Accuracy of model: {}\n".format(sklearn_model.score(x_test, y_test)))
+print("")
+print("----------------- KNeighbors Classifier -----------------")
+print("\nAccuracy of model: {}".format(sklearn_model.score(x_test, y_test)))
 
 
 """ Improve the model by normalizing the input data. """
