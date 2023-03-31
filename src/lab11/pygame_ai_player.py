@@ -9,20 +9,10 @@ from lab11.turn_combat import CombatPlayer
 class PyGameAIPlayer():
     def __init__(self, name):
         self.name = name
-        self.opponent_choices = []
 
-    def selectAction(self, percept):
+    def selectAction(self, state):
         return ord(str(random.randint(0,9)))
 
-        #No way of obtainning opponent's move, dont use for now.
-        """
-        # ** Previous round update **
-        if percept is not None:
-            self.opponent_choices.append(percept)
-
-        # ** Current round update **
-        self._action = self.weapon_selecting_strategy()
-        """
 
 
 
@@ -32,16 +22,14 @@ class PyGameAIPlayer():
 
 
 class PyGameAICombatPlayer(CombatPlayer):
-    def __init__(self, name):
-        super().__init__(name)
+    def __init__(self):
+        pass
 
     def weapon_selecting_strategy(self):
         
-        self.weapon = random.randint(0,2)
-        return self.weapon
+        #self.weapon = random.randint(0,2)
+        #return self.weapon
 
-        #No way of obtainning opponent's move, dont use for now.
-        """
         opponent_type = "unknown"
 
         # Questioning ----------------------------------------
@@ -96,4 +84,3 @@ class PyGameAICombatPlayer(CombatPlayer):
                 return 2
             elif self.opponent_choices[len(self.opponent_choices)-1] == 2:
                 return 0
-        """
