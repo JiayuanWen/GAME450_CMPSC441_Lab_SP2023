@@ -35,7 +35,7 @@ def run_pygame_combat(combat_surface, screen, player_sprite):
 
     opponent = PyGameComputerCombatPlayer("Computer")
     opponent_sprite = Sprite(
-        AI_SPRITE_PATH, (playersprite.sprite_pos[0] - 100, player_sprite.sprite_pos[1])
+        AI_SPRITE_PATH, (player_sprite.sprite_pos[0] - 100, player_sprite.sprite_pos[1])
     )
 
     players = [player, opponent]
