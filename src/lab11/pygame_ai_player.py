@@ -24,6 +24,10 @@ class PyGameAIPlayer():
 class PyGameAICombatPlayer(CombatPlayer):
     def __init__(self, name):
         super().__init__(name)
+        self.name = name
+        self.health = 100
+        self.weapon = 0
+        self.current_env_state = None
         
         
 
