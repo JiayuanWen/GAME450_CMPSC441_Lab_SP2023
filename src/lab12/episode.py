@@ -17,6 +17,7 @@ from pathlib import Path
 sys.path.append(str((Path(__file__) / ".." / "..").resolve().absolute()))
 
 from lab11.turn_combat import Combat
+from lab11.pygame_ai_player import PyGameAICombatPlayer
 
 def run_episode(player1, player2):
     episode_log = []
@@ -50,5 +51,10 @@ def run_episode(player1, player2):
 
     return episode_log
 
-
+if __name__ == "__main__":
+    player1 = PyGameAICombatPlayer("BOT")
+    player2 = PyGameAICombatPlayer("BOT")
+    
+    log = run_episode(player1, player2)
+    print(log)
         

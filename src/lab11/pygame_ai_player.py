@@ -22,8 +22,10 @@ class PyGameAIPlayer():
 
 
 class PyGameAICombatPlayer(CombatPlayer):
-    def __init__(self):
-        pass
+    def __init__(self, name):
+        super().__init__(name)
+        
+        
 
     def weapon_selecting_strategy(self):
         
@@ -66,21 +68,28 @@ class PyGameAICombatPlayer(CombatPlayer):
         # Action ----------------------------------------
         # Dealing with mimic or unknown opponent
         if opponent_type == "mimic" or opponent_type == "unknown":
-            return random.randint(0, 2)
+            self.weapon = random.randint(0, 2)
+            return self.weapon
 
         # Dealing with single opponent
         if opponent_type == "single":
             if self.opponent_choices[0] == 0:
-                return 1
+                self.weapon = 1
+                return self.weapon
             elif self.opponent_choices[0] == 1:
-                return 2
+                self.weapon = 2
+                return self.weapon
             else:
-                return 0
+                self.weapon = 0
+                return self.weapon
         # Dealing with switch opponent
         if opponent_type == "switch":
             if self.opponent_choices[len(self.opponent_choices)-1] == 0:
-                return 1
+                self.weapon = 1
+                return self.weapon
             elif self.opponent_choices[len(self.opponent_choices)-1] == 1:
-                return 2
+                self.weapon = 2
+                return self.weapon
             elif self.opponent_choices[len(self.opponent_choices)-1] == 2:
-                return 0
+                self.weapon = 0
+                return self.weapon
