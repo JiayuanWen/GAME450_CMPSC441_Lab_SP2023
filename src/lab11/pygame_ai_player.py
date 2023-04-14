@@ -9,13 +9,10 @@ from lab11.turn_combat import CombatPlayer
 class PyGameAIPlayer():
     def __init__(self, name):
         self.name = name
-        
 
     def selectAction(self, state):
         return ord(str(random.randint(0,9)))
 
-
-        
 
 
 
@@ -25,16 +22,14 @@ class PyGameAIPlayer():
 
 
 class PyGameAICombatPlayer(CombatPlayer):
-    def __init__(self, name):
-        super().__init__(name)
-        #self.opponent_choices = []
+    def __init__(self):
+        pass
 
     def weapon_selecting_strategy(self):
         
         #self.weapon = random.randint(0,2)
         #return self.weapon
 
-        #No way of obtainning opponent's move, dont use for now.
         opponent_type = "unknown"
 
         # Questioning ----------------------------------------
@@ -71,29 +66,21 @@ class PyGameAICombatPlayer(CombatPlayer):
         # Action ----------------------------------------
         # Dealing with mimic or unknown opponent
         if opponent_type == "mimic" or opponent_type == "unknown":
-            self.weapon = random.randint(0,2)
-            return self.weapon
+            return random.randint(0, 2)
 
         # Dealing with single opponent
         if opponent_type == "single":
             if self.opponent_choices[0] == 0:
-                self.weapon = 1
-                return self.weapon
+                return 1
             elif self.opponent_choices[0] == 1:
-                self.weapon = 2
-                return self.weapon
+                return 2
             else:
-                self.weapon = 0
-                return self.weapon
+                return 0
         # Dealing with switch opponent
         if opponent_type == "switch":
             if self.opponent_choices[len(self.opponent_choices)-1] == 0:
-                self.weapon = 1
-                return self.weapon
+                return 1
             elif self.opponent_choices[len(self.opponent_choices)-1] == 1:
-                self.weapon = 2
-                return self.weapon
+                return 2
             elif self.opponent_choices[len(self.opponent_choices)-1] == 2:
-                self.weapon = 0
-                return self.weapon
-
+                return 0
