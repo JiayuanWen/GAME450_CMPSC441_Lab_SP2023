@@ -1,12 +1,13 @@
 import pygame
+import sys
 from pathlib import Path
 
-from sprite import Sprite
-from turn_combat import CombatPlayer, Combat
-from pygame_ai_player import PyGameAICombatPlayer
-from pygame_human_player import PyGameHumanCombatPlayer
-
 AI_SPRITE_PATH = Path("assets/ai.png")
+
+sys.path.append(str((Path(__file__) / ".." / "..").resolve().absolute()))
+from lab11.sprite import Sprite
+from lab11.turn_combat import CombatPlayer, Combat
+from lab11.pygame_ai_player import PyGameAICombatPlayer
 
 pygame.font.init()
 game_font = pygame.font.SysFont("Comic Sans MS", 15)
@@ -35,19 +36,26 @@ def update_window_display(combat_surface, screen, player_sprite, opponent_sprite
     screen.blit(text_surface, (50, 50))
     pygame.display.update()
 
-def run_turn(currentGame, player, opponent, players):
+def run_turn(currentGame, player, opponent, printOutput=False):
+    players = [player, opponent]
+
     states = list(reversed([(player.health, player.weapon) for player in players]))
     for current_player, state in zip(players, states):
         current_player.selectAction(state)
+
+    observation = (player.health, opponent.health)
 
     currentGame.newRound()
     currentGame.takeTurn(player, opponent)
     print("%s's health = %d" % (player.name, player.health))
     print("%s's health = %d" % (opponent.name, opponent.health))
-    currentGame.checkWin(player, opponent)
-    
+
     reward = currentGame.checkWin(player, opponent)
-    return reward
+    
+    #currentGame.checkWin(player, opponent)
+    currentGame.combatLog.append((observation, player.my_choices[-1], reward))
+    
+    #return reward
     
 def run_pygame_combat(combat_surface, screen, player_sprite):
     currentGame = Combat()
@@ -61,13 +69,11 @@ def run_pygame_combat(combat_surface, screen, player_sprite):
         AI_SPRITE_PATH, (player_sprite.sprite_pos[0] - 100, player_sprite.sprite_pos[1])
     )
 
-    players = [player, opponent]
-
     # Main Game Loop
     while not currentGame.gameOver:
         update_window_display(combat_surface, screen, player_sprite, opponent_sprite)
 
-        run_turn(currentGame, player, opponent, players)
+        run_turn(currentGame, player, opponent)
 
 
 
