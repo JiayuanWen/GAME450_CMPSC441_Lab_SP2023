@@ -6,7 +6,6 @@ and collect the returns for each state-action pair.
 Then you will use the returns to calculate the action values for each state-action pair.
 Finally, you will use the action values to calculate the optimal policy.
 You will then test the optimal policy to see how well it performs.
-
 Sidebar-
 If you reward every action you may end up in a situation where the agent
 will always choose the action that gives the highest reward. Ironically,
@@ -42,8 +41,7 @@ class PyGamePolicyCombatPlayer(CombatPlayer):
         self.policy = policy
 
     def weapon_selecting_strategy(self):
-        self.weapon = self.policy[(self.health, self.current_env_state[0])]
-        #self.weapon = self.policy[self.current_env_state]
+        self.weapon = self.policy[self.current_env_state]
         return self.weapon
 
 
@@ -75,12 +73,15 @@ def run_episodes(n_episodes):
         Return the action values as a dictionary of dictionaries where the keys are states and 
             the values are dictionaries of actions and their values.
     '''
-    player1 = PyGameComputerCombatPlayer("CPU_Player")
-    player2 = PyGameRandomCombatPlayer("Unknown_Player")
+    #player1 = PyGameComputerCombatPlayer("CPU_Player")
+    #player2 = PyGameRandomCombatPlayer("Unknown_Player")
 
     episode_logs = []
 
     for i in range(n_episodes):
+        player1 = PyGameComputerCombatPlayer("CPU_Player")
+        player2 = PyGameRandomCombatPlayer("Unknown_Player")
+
         episode_log = run_episode(player1, player2, False)
         episode_logs.append(get_history_returns(episode_log))
 
@@ -124,14 +125,15 @@ def test_policy(policy):
         player2 = PyGameComputerCombatPlayer(names[1])
         players = [player1, player2]
         total_reward += sum(
-            [reward for _, _, reward in run_episode(*players,printOutput=True)]
+            [reward for _, _, reward in run_episode(*players)]
         )
     return total_reward / 100
 
 
 if __name__ == "__main__":
-    action_values = run_episodes(10000)
-    print("Action values" + str(action_values))
+    action_values = run_episodes(10)
+    print(action_values)
     optimal_policy = get_optimal_policy(action_values)
-    print("Optimal policy" + str(optimal_policy))
+    print(optimal_policy)
     print(test_policy(optimal_policy))
+    
