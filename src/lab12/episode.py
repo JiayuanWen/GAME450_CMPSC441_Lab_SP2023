@@ -25,6 +25,7 @@ def run_episode(player1, player2, printOutput=False):
     while not episode.gameOver:
         run_turn(episode, player1, player2, printOutput)
     
+    #print(episode.combatLog)
     return episode.combatLog
 
 if __name__ == "__main__":

@@ -18,13 +18,13 @@ from pathlib import Path
 sys.path.append(str((Path(__file__) / ".." / "..").resolve().absolute()))
 
 from lab11.pygame_combat import PyGameComputerCombatPlayer
+from lab11.pygame_ai_player import PyGameAICombatPlayer
 from lab11.turn_combat import CombatPlayer
 from lab12.episode import run_episode
 
-from collections import defaultdict
 import random
 import numpy as np
-
+from collections import defaultdict
 
 class PyGameRandomCombatPlayer(PyGameComputerCombatPlayer):
     def __init__(self, name):
@@ -73,41 +73,30 @@ def run_episodes(n_episodes):
         Return the action values as a dictionary of dictionaries where the keys are states and 
             the values are dictionaries of actions and their values.
     '''
-    #player1 = PyGameComputerCombatPlayer("CPU_Player")
-    #player2 = PyGameRandomCombatPlayer("Unknown_Player")
 
     episode_logs = []
-
+    reward_sum = {}
+    episode_return = defaultdict(lambda: defaultdict(float))
+    action_values = defaultdict(lambda: defaultdict(float))
+    
     for i in range(n_episodes):
-        player1 = PyGameComputerCombatPlayer("CPU_Player")
-        player2 = PyGameRandomCombatPlayer("Unknown_Player")
+        episode_log = run_episode(PyGameComputerCombatPlayer("CPU_Player"), PyGameAICombatPlayer("AI_Player"), False)
+        episode_logs.append(episode_log)
 
-        episode_log = run_episode(player1, player2, False)
-        episode_logs.append(get_history_returns(episode_log))
+    
+    for episode in episode_logs:
+        reward_sum = sum([reward for _, _, reward in episode])
 
-    return_sum = {}
-    for log in episode_logs:
-        for state in log:
+        for state, action, _ in episode:
+            episode_return[state][action] += reward_sum
+    
+    for state, action_rewards in episode_return.items():
+            for action, total_return in action_rewards.items():
+                action_values[state][action] = total_return / n_episodes
 
-            if state not in return_sum: 
-                    return_sum[state] = {}
-
-            for action in log[state]:
-
-                if action not in return_sum[state]: 
-                    return_sum[state][action] = {"value": 0, "num": 0}
-
-                return_sum[state][action]["value"] += log[state][action]
-                return_sum[state][action]["num"] += 1
-
-    action_values = {}
-    for state in return_sum:
-        if state not in action_values:
-            action_values[state] = {}
-        for action in return_sum[state]:
-            action_values[state][action] = return_sum[state][action]["value"] / return_sum[state][action]["num"]
-
+    print(action_values)
     return action_values
+    
 
 
 def get_optimal_policy(action_values):
@@ -131,7 +120,7 @@ def test_policy(policy):
 
 
 if __name__ == "__main__":
-    action_values = run_episodes(10)
+    action_values = run_episodes(100)
     print(action_values)
     optimal_policy = get_optimal_policy(action_values)
     print(optimal_policy)

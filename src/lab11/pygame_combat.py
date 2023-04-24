@@ -54,7 +54,8 @@ def run_turn(currentGame, player, opponent, printOutput=False):
     
     #currentGame.checkWin(player, opponent)
     currentGame.combatLog.append((observation, player.my_choices[-1], reward))
-    
+
+    #reward = (observation, player.my_choices[-1], reward)
     #return reward
     
 def run_pygame_combat(combat_surface, screen, player_sprite):
