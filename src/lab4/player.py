@@ -6,6 +6,7 @@ class Player:
         self.my_choices = []
         self.opponent_choices = []
         self.strategy = strategy
+        self.money = 350
 
     def selectAction(self, percept):
         """

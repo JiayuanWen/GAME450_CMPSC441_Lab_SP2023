@@ -6,6 +6,7 @@ from pathlib import Path
 
 sys.path.append(str((Path(__file__) / ".." / "..").resolve().absolute()))
 from lab4.rock_paper_scissor import Player
+from speech_function.speech import speech
 
 weapons = ["Sword", "Arrow", "Fire"]
 
@@ -66,21 +67,37 @@ class Combat:
     def newRound(self):
         self.round += 1
         print("\n***   Round: %d   ***\n" % (self.round))
+        current_round_announce = str(f'Round {(self.round)}')
+        print(current_round_announce)
+        speech(current_round_announce)
 
     # Check if either or both Players is below zero health
-    def checkWin(self, player, opponent):
+    def checkWin(self, player, opponent, state):
         if player.health < 1 and opponent.health > 0:
             self.gameOver = True
-            print("You Lose")
-            return 1
+
+            print("*** Game Over ***")
+            speech(str(f'{player.name} Lost the battle. Game Over!'))
+            state.player_battlestatus = "Lost"
+
+            return 0
         elif opponent.health < 1 and player.health > 0:
             self.gameOver = True
-            print("You Win")
+
+            print("*** You Won! ***")
+            speech(str(f'{player.name} Won the battle! {player.name} earned 150 Rubys.'))
+            state.player_battlestatus = "Won"
+
             return 1
+            
         elif player.health < 1 and opponent.health < 1:
             self.gameOver = True
+
             print("*** Draw ***")
-            return 0
+            speech(str(f'The battle ended with a draw! {player.name} continues journey.'))
+            state.player_battlestatus = "Draw"
+
+            return 1
         else:
             return 0
 
@@ -94,7 +111,10 @@ class Combat:
                 weapons[opponent.weapon],
             )
         )
+        speech(str(f'{player.name} used a {weapons[player.weapon]}, opponent used a {weapons[opponent.weapon]}.'))
+
         print("%s caused damage to %s\n" % (player.name, opponent.name))
+        speech(str(f'{player.name} caused damage to {opponent.name}.'))
 
     def takeTurn(self, player, opponent):
 
@@ -114,11 +134,14 @@ class Combat:
         print(
             f"\n{player.name} used {weapons[player.weapon]}, {opponent.name} used {weapons[opponent.weapon]}"
         )
+        speech(str(f"\n{player.name} used {weapons[player.weapon]}, {opponent.name} used {weapons[opponent.weapon]}"))
         if decisionArray[player.weapon][opponent.weapon]:
             opponent.damage()
+            speech(str(f'{opponent.name} took damage!'))
 
         if decisionArray[opponent.weapon][player.weapon]:
             player.damage()
+            speech(str(f'{player.name} took damage!'))
 
 
 def run_console_combat():

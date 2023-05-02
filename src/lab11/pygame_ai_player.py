@@ -9,6 +9,7 @@ from lab11.turn_combat import CombatPlayer
 class PyGameAIPlayer():
     def __init__(self, name):
         self.name = name
+        self.money = 350
 
     def selectAction(self, state):
         return ord(str(random.randint(0,9)))
@@ -28,7 +29,6 @@ class PyGameAICombatPlayer(CombatPlayer):
         self.health = 100
         self.weapon = 0
         self.current_env_state = None
-        
         
 
     def weapon_selecting_strategy(self):

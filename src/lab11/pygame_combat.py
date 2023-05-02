@@ -1,5 +1,7 @@
 import pygame
 import sys
+import time
+from time import sleep
 from pathlib import Path
 
 AI_SPRITE_PATH = Path("assets/ai.png")
@@ -8,6 +10,7 @@ sys.path.append(str((Path(__file__) / ".." / "..").resolve().absolute()))
 from lab11.sprite import Sprite
 from lab11.turn_combat import CombatPlayer, Combat
 from lab11.pygame_ai_player import PyGameAICombatPlayer
+from lab11.pygame_human_player import PyGameHumanCombatPlayer
 
 pygame.font.init()
 game_font = pygame.font.SysFont("Comic Sans MS", 15)
@@ -36,36 +39,36 @@ def update_window_display(combat_surface, screen, player_sprite, opponent_sprite
     screen.blit(text_surface, (50, 50))
     pygame.display.update()
 
-def run_turn(currentGame, player, opponent, printOutput=False):
+def run_turn(currentGame, player, opponent, state, printOutput=False):
     players = [player, opponent]
-
+    observation = (player.health, opponent.health)
     states = list(reversed([(player.health, player.weapon) for player in players]))
     for current_player, state in zip(players, states):
         current_player.selectAction(state)
 
-    observation = (player.health, opponent.health)
 
     currentGame.newRound()
     currentGame.takeTurn(player, opponent)
     print("%s's health = %d" % (player.name, player.health))
     print("%s's health = %d" % (opponent.name, opponent.health))
 
-    reward = currentGame.checkWin(player, opponent)
+    reward = currentGame.checkWin(player, opponent, state)
     
     #currentGame.checkWin(player, opponent)
     currentGame.combatLog.append((observation, player.my_choices[-1], reward))
 
     #reward = (observation, player.my_choices[-1], reward)
     #return reward
+    sleep(0.31)
     
-def run_pygame_combat(combat_surface, screen, player_sprite):
+def run_pygame_combat(combat_surface, screen, player_sprite, state):
     currentGame = Combat()
-    player = PyGameHumanCombatPlayer("Legolas")
+    player = PyGameHumanCombatPlayer("Oillill")
     """ Add a line below that will reset the player object
     to an instance of the PyGameAICombatPlayer class"""
-    player = PyGameAICombatPlayer("BOT")
+    #player = PyGameAICombatPlayer("Oillill")
 
-    opponent = PyGameComputerCombatPlayer("Computer")
+    opponent = PyGameComputerCombatPlayer("Enemy")
     opponent_sprite = Sprite(
         AI_SPRITE_PATH, (player_sprite.sprite_pos[0] - 100, player_sprite.sprite_pos[1])
     )
@@ -74,7 +77,7 @@ def run_pygame_combat(combat_surface, screen, player_sprite):
     while not currentGame.gameOver:
         update_window_display(combat_surface, screen, player_sprite, opponent_sprite)
 
-        run_turn(currentGame, player, opponent)
+        run_turn(currentGame, player, opponent, state)
 
 
 
